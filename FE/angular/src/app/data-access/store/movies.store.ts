@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../services/data.service';
 import { BehaviorSubject, Observable, forkJoin, map, mergeMap, tap } from 'rxjs';
-import { MovieComplete, MovieData } from '../models/movie.interfaces';
+import { MovieComplete } from '../models/movie.interfaces';
+import { MovieState } from '../models/state.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -9,20 +10,22 @@ import { MovieComplete, MovieData } from '../models/movie.interfaces';
 export class MovieStore {
   private posterUrl = 'https://m.media-amazon.com/images/M/';
   private replacePosterUrl = '/assets/images/';
-  private _storedMovies: BehaviorSubject<MovieData> = new BehaviorSubject<MovieData>({
-    Decades: [],
-    Search: []
+
+  private _state: BehaviorSubject<MovieState> = new BehaviorSubject<MovieState>({
+    decades: [],
+    movies: [],
+    filteredMovies: []
   });
-  storedMovies = this._storedMovies.asObservable();
+  state$ = this._state.asObservable();
 
   constructor(private movieService: DataService) {
     this.getMovies();
   }
 
   private getMovies() {
-    const { Decades, Search } = this._storedMovies.getValue();
+    const { decades, movies } = this._state.getValue();
 
-    if (Search.length > 0) return;
+    if (movies.length > 0) return;
 
     const getMovies$ = this.movieService.getMovies().pipe(
       mergeMap(({ Search }) =>
@@ -30,18 +33,18 @@ export class MovieStore {
           Search.map(({ imdbID, Year }) => {
             // add decade to decades
             const decade = Math.ceil(parseInt(Year as string) / 10) * 10 - 10;
-            if (Decades.indexOf(decade) < 0) {
-              Decades.push(decade);
+            if (decades.indexOf(decade) < 0) {
+              decades.push(decade);
             }
 
             return this.getMovie(imdbID);
           })
         )
       ),
-      tap((Search) => {
-        Search = Search.sort(({ Year: year1 }: MovieComplete, { Year: year2 }: MovieComplete) => year1 - year2);
-        Decades.sort((a, b) => a - b);
-        this._storedMovies.next({ Decades, Search });
+      tap((movies) => {
+        movies = movies.sort(({ Year: year1 }: MovieComplete, { Year: year2 }: MovieComplete) => year1 - year2);
+        decades.sort((a, b) => a - b);
+        this._state.next({ decades, movies, filteredMovies: movies });
       })
     );
 
@@ -66,5 +69,19 @@ export class MovieStore {
         Year: parseInt(Year as string)
       }))
     );
+  }
+
+  filterMovies(decade?: number) {
+    const state = this._state.getValue();
+
+    const filteredMovies = decade
+      ? state.movies.filter((movie) => movie.Year >= decade && movie.Year < decade + 10)
+      : state.movies;
+
+    this._state.next({
+      ...state,
+      filteredMovies,
+      currentDecade: decade
+    });
   }
 }

@@ -1,45 +1,37 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { tap } from 'rxjs';
-import { DataService } from '../../data-access/services/data.service';
-import { MovieStore } from 'src/app/data-access/store/movies.store';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable, combineLatest, map } from 'rxjs';
 import { MovieComplete } from 'src/app/data-access/models/movie.interfaces';
+import { MoviesFacade } from 'src/app/data-access/facades/movies.facade';
 
 @Component({
   selector: 'app-movies',
-  templateUrl: './movies.component.html'
+  templateUrl: './movies.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MoviesComponent implements OnDestroy, OnInit {
-  public currDecade: number | undefined;
-  public decades: number[] = [];
-  public filteredMovies: MovieComplete[] = [];
-  public movies: MovieComplete[] = [];
-  private moviesSubscription: any;
+export class MoviesComponent implements OnInit {
+  filteredMovies$: Observable<MovieComplete[]>;
+  decades$: Observable<number[]>;
+  currentDecade$: Observable<number | undefined>;
+  data$: Observable<{ decades: number[]; currDecade?: number }>;
 
-  constructor(private dataService: DataService, private movieStore: MovieStore) {}
+  constructor(private moviesFacade: MoviesFacade) {}
 
   public ngOnInit(): void {
-    this.moviesSubscription = this.movieStore.storedMovies
-      .pipe(
-        tap((data) => {
-          this.decades = data.Decades;
-          this.movies = data.Search;
-          this.displayMovies();
-        })
-      )
-      .subscribe();
-  }
+    this.decades$ = this.moviesFacade.decades$;
+    this.filteredMovies$ = this.moviesFacade.filteredMovies$;
+    this.currentDecade$ = this.moviesFacade.currentDecade$;
 
-  public ngOnDestroy(): void {
-    this.moviesSubscription.unsubscribe();
+    this.data$ = combineLatest([this.decades$, this.currentDecade$]).pipe(
+      map(([decades, currDecade]) => {
+        return {
+          decades,
+          currDecade
+        };
+      })
+    );
   }
 
   public displayMovies(decade?: number): void {
-    if (!this.movies?.length) {
-      this.filteredMovies = [];
-      return;
-    }
-
-    this.currDecade = decade;
-    this.filteredMovies = this.dataService.getFilteredMovies(this.movies, decade);
+    this.moviesFacade.getFilteredMovies(decade);
   }
 }

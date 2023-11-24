@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { mockProvider, Spectator } from '@ngneat/spectator';
 import { createComponentFactory } from '@ngneat/spectator/jest';
-import { DataService } from '../../services/data.service';
+import { DataService } from '../../data-access/services/data.service';
 import { MovieComponent } from './movie.component';
 
 const mockActivatedRoute = mockProvider(ActivatedRoute, {

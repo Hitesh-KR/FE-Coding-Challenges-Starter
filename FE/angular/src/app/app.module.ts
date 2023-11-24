@@ -11,7 +11,7 @@ import { GoDetailsComponent } from './components/navigation/go-details/go-detail
 import { GoImdbComponent } from './components/navigation/go-imdb/go-imdb.component';
 import { NavigationService } from './components/navigation/navigation.service';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { DataService } from './services/data.service';
+import { DataService } from './data-access/services/data.service';
 
 @NgModule({
   declarations: [

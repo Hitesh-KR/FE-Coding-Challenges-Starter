@@ -20,4 +20,8 @@ export class MoviesFacade {
   getFilteredMovies(decade?: number) {
     this.movieStore.filterMovies(decade);
   }
+
+  getMovieDetails(imdbID: string) {
+    return this.filteredMovies$.pipe(map((movies) => movies.find((m) => m.imdbID === imdbID)));
+  }
 }

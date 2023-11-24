@@ -1,7 +1,7 @@
 <app-go-back></app-go-back>
 
 <ul *ngIf="movie" class="movie">
-  <li class="grid grid-bleed">
+  <li class="grid grid-bleed col-grid direction-row">
     <div class="image col-3"><img [src]="movie.Poster" /></div>
     <div class="content col-9 col-grid">
       <div class="title">{{ movie.Title }} ({{ movie.Year }})</div>

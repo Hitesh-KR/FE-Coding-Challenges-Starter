@@ -1,25 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { tap } from 'rxjs';
-import { DataService, MovieComplete } from '../../services/data.service';
+import { Observable, tap } from 'rxjs';
+import { MovieComplete } from 'src/app/data-access/models/movie.interfaces';
+import { MoviesFacade } from '../../data-access/facades/movies.facade';
 
 @Component({
   selector: 'app-movie',
   templateUrl: './movie.component.html'
 })
-export class MovieComponent implements OnDestroy, OnInit {
-  public movie: MovieComplete;
+export class MovieComponent implements OnInit {
   public movieId = '';
-  private movieSubscription: any;
+  movie$: Observable<MovieComplete | undefined>;
 
-  constructor(private activatedRoute: ActivatedRoute, private dataService: DataService) {}
+  constructor(private activatedRoute: ActivatedRoute, private movieFacade: MoviesFacade) {}
 
   public ngOnInit() {
-    this.activatedRoute.params.pipe(tap(({ id }) => (this.movieId = id)));
-    this.movieSubscription = this.dataService.getMovie(this.movieId).pipe(tap((data) => (this.movie = data)));
-  }
-
-  public ngOnDestroy(): void {
-    this.movieSubscription.unsubscribe();
+    this.activatedRoute.params.pipe(tap((params) => (this.movieId = String(params.id)))).subscribe();
+    this.movie$ = this.movieFacade.getMovieDetails(this.movieId);
   }
 }

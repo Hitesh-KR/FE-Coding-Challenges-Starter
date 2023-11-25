@@ -1,35 +1,20 @@
 <app-go-back></app-go-back>
 
-<ul *ngIf="movie" class="movie">
-  <li class="grid grid-bleed">
-    <div class="image col-3"><img [src]="movie.Poster" /></div>
+<ul *ngIf="movie$ | async as movie" class="movie">
+  <li class="grid grid-bleed col-grid direction-row">
+    <div class="image col-3">
+      <app-poster [imgSrc]="movie.Poster"></app-poster>
+    </div>
     <div class="content col-9 col-grid">
-      <div class="title">{{ movie.Title }} ({{ movie.Year }})</div>
-      <ul class="metadata">
-        <li class="rated">
-          <div>{{ movie.Rated }}</div>
-        </li>
-        <li class="runtime">{{ movie.Runtime }}</li>
-        <li class="genre">{{ movie.Genre }}</li>
-        <li class="release">{{ movie.Released }}</li>
-      </ul>
-      <ul class="details">
-        <li>
-          <strong>Director:</strong>
-          {{ movie.Director }}
-        </li>
-        <li>
-          <strong>Writer:</strong>
-          {{ movie.Writer }}
-        </li>
-        <li>
-          <strong>Stars:</strong>
-          {{ movie.Actors }}
-        </li>
-      </ul>
-      <div class="plot">
-        {{ movie.Plot }}
-      </div>
+      <app-title [title]="movie.Title" [year]="movie.Year"></app-title>
+      <app-meta-data
+        [rated]="movie.Rated"
+        [runtime]="movie.Runtime"
+        [released]="movie.Released"
+        [genre]="movie.Genre"
+      ></app-meta-data>
+      <app-details [director]="movie.Director" [writer]="movie.Writer" [actors]="movie.Actors"></app-details>
+      <app-plot [plot]="movie.Plot"></app-plot>
       <div class="nav flex-footer">
         <app-go-imdb [imdbId]="movie.imdbID"></app-go-imdb>
       </div>

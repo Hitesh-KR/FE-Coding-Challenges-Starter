@@ -27,6 +27,7 @@
         font-weight: $fontWeightBold;
         height: $wideSpace;
         border-bottom: 1px solid $darkGray;
+        overflow: hidden;
       }
       .details,
       .metadata {

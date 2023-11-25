@@ -7,4 +7,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class PosterComponent {
   @Input() imgSrc: string;
+  @Input() imgAlt: string;
 }

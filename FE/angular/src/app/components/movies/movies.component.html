@@ -11,7 +11,7 @@
   <ul class="movies" *ngIf="filteredMovies.length">
     <li *ngFor="let movie of filteredMovies" class="grid grid-bleed col-grid direction-row">
       <div class="image col-3">
-        <app-poster [imgSrc]="movie.Poster"></app-poster>
+        <app-poster [imgAlt]="movie.Title" [imgSrc]="movie.Poster"></app-poster>
       </div>
       <div class="content col-9 col-grid">
         <app-title [title]="movie.Title"></app-title>

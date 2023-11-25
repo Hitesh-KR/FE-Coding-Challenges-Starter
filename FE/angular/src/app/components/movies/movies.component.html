@@ -10,19 +10,13 @@
 <ng-container *ngIf="filteredMovies$ | async as filteredMovies">
   <ul class="movies" *ngIf="filteredMovies.length">
     <li *ngFor="let movie of filteredMovies" class="grid grid-bleed col-grid direction-row">
-      <div class="image col-3"><img [src]="movie.Poster" /></div>
+      <div class="image col-3">
+        <app-poster [imgSrc]="movie.Poster"></app-poster>
+      </div>
       <div class="content col-9 col-grid">
-        <div class="title">{{ movie.Title }}</div>
-        <ul class="metadata">
-          <li class="rated">
-            <div>{{ movie.Rated }}</div>
-          </li>
-          <li class="runtime">{{ movie.Runtime }}</li>
-          <li class="release">{{ movie.Released }}</li>
-        </ul>
-        <div class="plot">
-          {{ movie.Plot }}
-        </div>
+        <app-title [title]="movie.Title"></app-title>
+        <app-meta-data [rated]="movie.Rated" [runtime]="movie.Runtime" [released]="movie.Released"></app-meta-data>
+        <app-plot [plot]="movie.Plot"></app-plot>
         <div class="nav flex-footer">
           <app-go-details [imdbId]="movie.imdbID"></app-go-details>
         </div>

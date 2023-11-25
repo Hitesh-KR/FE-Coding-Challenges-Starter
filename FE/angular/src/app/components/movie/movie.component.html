@@ -2,17 +2,17 @@
 
 <ul *ngIf="movie$ | async as movie" class="movie">
   <li class="grid grid-bleed col-grid direction-row">
-    <div class="image col-3"><img [src]="movie.Poster" /></div>
+    <div class="image col-3">
+      <app-poster [imgSrc]="movie.Poster"></app-poster>
+    </div>
     <div class="content col-9 col-grid">
-      <div class="title">{{ movie.Title }} ({{ movie.Year }})</div>
-      <ul class="metadata">
-        <li class="rated">
-          <div>{{ movie.Rated }}</div>
-        </li>
-        <li class="runtime">{{ movie.Runtime }}</li>
-        <li class="genre">{{ movie.Genre }}</li>
-        <li class="release">{{ movie.Released }}</li>
-      </ul>
+      <app-title [title]="movie.Title" [year]="movie.Year"></app-title>
+      <app-meta-data
+        [rated]="movie.Rated"
+        [runtime]="movie.Runtime"
+        [released]="movie.Released"
+        [genre]="movie.Genre"
+      ></app-meta-data>
       <ul class="details">
         <li>
           <strong>Director:</strong>
@@ -27,9 +27,7 @@
           {{ movie.Actors }}
         </li>
       </ul>
-      <div class="plot">
-        {{ movie.Plot }}
-      </div>
+      <app-plot [plot]="movie.Plot"></app-plot>
       <div class="nav flex-footer">
         <app-go-imdb [imdbId]="movie.imdbID"></app-go-imdb>
       </div>

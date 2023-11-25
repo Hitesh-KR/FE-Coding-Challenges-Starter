@@ -4,6 +4,7 @@ import { BehaviorSubject, EMPTY, Observable, catchError, forkJoin, map, mergeMap
 import { MovieComplete } from '../models/movie.interfaces';
 import { MovieState } from '../models/state.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SortByYear, getYearsDecade, isMovieReleasedinDecade } from '../util/movies.util';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class MovieStore {
         forkJoin(
           Search.map(({ imdbID, Year }) => {
             // add decade to decades
-            const decade = Math.ceil(parseInt(Year as string) / 10) * 10 - 10;
+            const decade = getYearsDecade(Year);
             if (decades.indexOf(decade) < 0) {
               decades.push(decade);
             }
@@ -43,7 +44,7 @@ export class MovieStore {
         )
       ),
       tap((movies) => {
-        movies = movies.sort(({ Year: year1 }: MovieComplete, { Year: year2 }: MovieComplete) => year1 - year2);
+        movies.sort(SortByYear);
         decades.sort((a, b) => a - b);
         this._state.next({ decades, movies, filteredMovies: movies });
       }),
@@ -80,7 +81,7 @@ export class MovieStore {
     const state = this._state.getValue();
 
     const filteredMovies = decade
-      ? state.movies.filter((movie) => movie.Year >= decade && movie.Year < decade + 10)
+      ? state.movies.filter((movie) => isMovieReleasedinDecade(decade, movie.Year))
       : state.movies;
 
     this._state.next({

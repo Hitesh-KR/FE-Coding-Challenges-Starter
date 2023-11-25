@@ -15,7 +15,7 @@ export class MovieComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute, private movieFacade: MoviesFacade) {}
 
   public ngOnInit() {
-    this.activatedRoute.params.pipe(tap(({ id }) => (this.movieId = id))).subscribe();
+    this.activatedRoute.params.pipe(tap((params) => (this.movieId = String(params.id)))).subscribe();
     this.movie$ = this.movieFacade.getMovieDetails(this.movieId);
   }
 }

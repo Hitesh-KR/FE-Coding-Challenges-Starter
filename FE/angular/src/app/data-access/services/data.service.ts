@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, isDevMode } from '@angular/core';
-import { forkJoin, Observable, of, throwError } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-import { MovieComplete, MovieData, MovieDetails, SearchResults } from '../models/movie.interfaces';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { MovieDetails, SearchResults } from '../models/movie.interfaces';
 
 @Injectable({
   providedIn: 'root'

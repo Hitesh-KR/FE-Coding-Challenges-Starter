@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../services/data.service';
-import { BehaviorSubject, Observable, forkJoin, map, mergeMap, tap } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, catchError, forkJoin, map, mergeMap, tap } from 'rxjs';
 import { MovieComplete } from '../models/movie.interfaces';
 import { MovieState } from '../models/state.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,10 @@ export class MovieStore {
         movies = movies.sort(({ Year: year1 }: MovieComplete, { Year: year2 }: MovieComplete) => year1 - year2);
         decades.sort((a, b) => a - b);
         this._state.next({ decades, movies, filteredMovies: movies });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        console.error(err.message);
+        return EMPTY;
       })
     );
 

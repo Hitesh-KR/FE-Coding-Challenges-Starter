@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { MovieComplete } from 'src/app/data-access/models/movie.interfaces';
-import { MoviesFacade } from 'src/app/data-access/facades/movies.facade';
+import { MoviesFacade } from '../../data-access/facades/movies.facade';
 
 @Component({
   selector: 'app-movie',

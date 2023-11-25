@@ -1,14 +1,31 @@
 import { ActivatedRoute } from '@angular/router';
 import { mockProvider, Spectator } from '@ngneat/spectator';
 import { createComponentFactory } from '@ngneat/spectator/jest';
-import { DataService } from '../../data-access/services/data.service';
 import { MovieComponent } from './movie.component';
+import { MoviesFacade } from '../../data-access/facades/movies.facade';
+import { of } from 'rxjs';
 
+const mockMovie = {
+  Title: 'Mock Movie',
+  Year: 2000,
+  Rated: 'G',
+  Released: '01 Jan 2000',
+  Runtime: '90 min',
+  Genre: 'Mock Genre',
+  Director: 'Director McMock',
+  Writer: 'Writer Mock, Writer Mockerson',
+  Actors: 'Actor McMock, Actor Mockerson',
+  Plot: 'Mock movie plot summary.',
+  Poster:
+    'https://m.media-amazon.com/images/M/MV5BOTY4YjI2N2MtYmFlMC00ZjcyLTg3YjEtMDQyM2ZjYzQ5YWFkXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg',
+  imdbID: 'tt123',
+  Type: 'movie'
+};
 const mockActivatedRoute = mockProvider(ActivatedRoute, {
-  params: jest.fn()
+  params: of({ id: 1 })
 });
-const mockDataService = mockProvider(DataService, {
-  getMovie: jest.fn()
+const mockMovieFacade = mockProvider(MoviesFacade, {
+  getMovieDetails: jest.fn().mockReturnValue(of(mockMovie))
 });
 
 describe('MovieComponent', () => {
@@ -18,7 +35,7 @@ describe('MovieComponent', () => {
     component: MovieComponent,
     imports: [],
     declarations: [],
-    providers: [mockActivatedRoute, mockDataService],
+    providers: [mockActivatedRoute, mockMovieFacade],
     shallow: true,
     detectChanges: false
   });
@@ -31,5 +48,12 @@ describe('MovieComponent', () => {
   test('should create the component', () => {
     component.ngOnInit();
     expect(component).toBeTruthy();
+  });
+
+  test('check movie observable value', () => {
+    component.ngOnInit();
+    component.movie$.subscribe((data) => {
+      expect(data).toBe(mockMovie);
+    });
   });
 });

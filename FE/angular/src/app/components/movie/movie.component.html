@@ -13,20 +13,7 @@
         [released]="movie.Released"
         [genre]="movie.Genre"
       ></app-meta-data>
-      <ul class="details">
-        <li>
-          <strong>Director:</strong>
-          {{ movie.Director }}
-        </li>
-        <li>
-          <strong>Writer:</strong>
-          {{ movie.Writer }}
-        </li>
-        <li>
-          <strong>Stars:</strong>
-          {{ movie.Actors }}
-        </li>
-      </ul>
+      <app-details [director]="movie.Director" [writer]="movie.Writer" [actors]="movie.Actors"></app-details>
       <app-plot [plot]="movie.Plot"></app-plot>
       <div class="nav flex-footer">
         <app-go-imdb [imdbId]="movie.imdbID"></app-go-imdb>
